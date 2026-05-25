@@ -1,0 +1,17 @@
+name: Test Formula
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install from formula
+        run: brew install --build-from-source ./Formula/tokenbot.rb
+      - name: Smoke test
+        run: tokenbot --version
