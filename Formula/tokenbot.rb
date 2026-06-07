@@ -1,8 +1,8 @@
 class Tokenbot < Formula
   desc "TokenBot user-facing CLI — strategies, copiers, exchanges, balances, webhooks"
   homepage "https://tokenbot.org"
-  url "https://registry.npmjs.org/tokenbot/-/tokenbot-0.1.0-beta.1.tgz"
-  sha256 "b9db71a6e8a20f12133f93ccb475aa9f9b2331632cf4ac34c3a716cc9e879d5c"
+  url "https://registry.npmjs.org/tokenbot/-/tokenbot-0.1.0-beta.2.tgz"
+  sha256 "33a565193b0f4f161c5239c3c5e597e51286cbf14a152a7c887c768e9665999c"
   license "MIT"
 
   # tokenbot CLI requires Node 22+ at runtime.
