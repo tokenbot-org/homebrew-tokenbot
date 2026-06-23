@@ -12,7 +12,7 @@ brew install tokenbot
 ## What it gives you
 
 - `tokenbot` — manage strategies, copiers, exchange links, balances, and webhooks from your terminal
-- See `tokenbot --help` after install, or visit https://tokenbot.org for docs
+- See `tokenbot --help` after install, or visit https://tokenbot.com for docs
 
 ## Updating
 
