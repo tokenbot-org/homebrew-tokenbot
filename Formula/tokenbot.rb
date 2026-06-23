@@ -1,6 +1,6 @@
 class Tokenbot < Formula
   desc "TokenBot user-facing CLI — strategies, copiers, exchanges, balances, webhooks"
-  homepage "https://tokenbot.org"
+  homepage "https://tokenbot.com"
   url "https://registry.npmjs.org/tokenbot/-/tokenbot-0.1.0-beta.3.tgz"
   sha256 "4a426d639983b51adcf035d0741a3259cfe625d80e2f75a7243f77aa5e08f017"
   license "MIT"
