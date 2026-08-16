@@ -28,7 +28,10 @@ jobs:
           ln -s "$GITHUB_WORKSPACE" "$TAP_DIR"
           brew tap
           # Prove the tap resolves to the formula in this checkout, not a cached one.
-          brew info --formula tokenbot-org/tokenbot/tokenbot | head -3
+          # NOT `| head -3`: head closes the pipe early, brew dies on EPIPE
+          # ("Broken pipe @ rb_sys_fail_on_write") and `set -o pipefail` turns
+          # that into a step failure. sed consumes the whole stream.
+          brew info --formula tokenbot-org/tokenbot/tokenbot | sed -n '1,3p'
 
       - name: Install from formula
         run: brew install --build-from-source tokenbot-org/tokenbot/tokenbot
