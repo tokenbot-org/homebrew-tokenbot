@@ -11,7 +11,40 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v6
+
+      # Homebrew refuses to install a formula by path:
+      #   "Homebrew requires formulae to be in a tap, rejecting: ./Formula/tokenbot.rb"
+      # so `brew install ./Formula/tokenbot.rb` has failed every run since at
+      # least 2026-05-25, on main as well as on PRs. The check was red for
+      # months and therefore protected nothing.
+      #
+      # Symlink the checkout in as a real tap so Homebrew installs THIS PR's
+      # formula (not whatever is published on main) by its tap-qualified name.
+      - name: Register the checkout as a local tap
+        run: |
+          set -euo pipefail
+          TAP_DIR="$(brew --repository)/Library/Taps/tokenbot-org/homebrew-tokenbot"
+          mkdir -p "$(dirname "$TAP_DIR")"
+          ln -s "$GITHUB_WORKSPACE" "$TAP_DIR"
+          brew tap
+          # Prove the tap resolves to the formula in this checkout, not a cached one.
+          brew info --formula tokenbot-org/tokenbot/tokenbot | head -3
+
       - name: Install from formula
-        run: brew install --build-from-source ./Formula/tokenbot.rb
+        run: brew install --build-from-source tokenbot-org/tokenbot/tokenbot
+
       - name: Smoke test
-        run: tokenbot --version
+        run: |
+          set -euo pipefail
+          tokenbot --version
+          # The version must match the tarball the formula pins. A formula whose
+          # url and sha256 disagree with what actually installs is the failure
+          # mode this job exists to catch.
+          EXPECTED="$(grep -oE 'tokenbot-[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?\.tgz' Formula/tokenbot.rb | sed -E 's/^tokenbot-//; s/\.tgz$//')"
+          ACTUAL="$(tokenbot --version | tr -d '[:space:]')"
+          echo "formula pins: $EXPECTED"
+          echo "installed:    $ACTUAL"
+          [ "$EXPECTED" = "$ACTUAL" ] || { echo "::error::formula pins $EXPECTED but installed $ACTUAL"; exit 1; }
+
+      - name: Smoke test a real command
+        run: tokenbot --help
